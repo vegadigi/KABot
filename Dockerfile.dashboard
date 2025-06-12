@@ -1,0 +1,23 @@
+# Use an official Python runtime as a parent image
+FROM python:3.9-slim
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Copy the requirements file for the dashboard
+COPY requirements.dashboard.txt ./
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.dashboard.txt
+
+# Copy the dashboard and utility files into the container
+# We only copy the files needed for the dashboard to keep the image small
+COPY ./dashboard.py ./
+COPY ./database_utils.py ./
+COPY .env ./
+
+# Make port 5000 available to the world outside this container
+EXPOSE 5000
+
+# Command to run the dashboard when the container launches
+CMD ["python", "dashboard.py"]
