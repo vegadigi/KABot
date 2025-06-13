@@ -30,6 +30,7 @@ status_data = {
     'pipeline_processor': {'status': 'Initializing', 'last_seen': None},
     'sentiment_engine': {'status': 'Initializing', 'last_seen': None},
     'asset_discoverer': {'status': 'Initializing', 'last_seen': None},
+    'asset_monitor': {'status': 'Initializing', 'last_seen': None},
 }
 
 
@@ -105,6 +106,23 @@ async def main():
 
     await asset_discoverer.initialize()
 
+    async def asset_monitor(db, kr_ws, al_ws, engine, poll_interval=30):
+        print("Database asset monitor started...")
+        known = set(await asyncio.to_thread(db.get_monitored_assets))
+        while True:
+            update_status('asset_monitor')
+            current = set(await asyncio.to_thread(db.get_monitored_assets))
+            new_assets = current - known
+            for asset in new_assets:
+                if '/' in asset:
+                    if await kr_ws.add_subscription(asset):
+                        engine.add_asset(asset, 'crypto')
+                else:
+                    if await al_ws.add_subscription(asset):
+                        engine.add_asset(asset, 'stock')
+            known = current
+            await asyncio.sleep(poll_interval)
+
     async def pipeline_processor(raw_q, processed_q):
         print("Linear pipeline processor started.")
         while True:
@@ -136,7 +154,8 @@ async def main():
         run_and_update_status('reddit_client', reddit_client.stream_comments()),
         run_and_update_status('pipeline_processor', pipeline_processor(raw_data_queue, processed_data_queue)),
         run_and_update_status('sentiment_engine', sentiment_engine.run()),
-        run_and_update_status('asset_discoverer', asset_discoverer.run())
+        run_and_update_status('asset_discoverer', asset_discoverer.run()),
+        run_and_update_status('asset_monitor', asset_monitor(db_manager, kraken_ws, alpaca_ws, sentiment_engine))
     )
 
 
