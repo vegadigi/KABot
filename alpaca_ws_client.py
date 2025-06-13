@@ -15,31 +15,28 @@ class AlpacaWsClient:
         self._conn = None
         self.loop = loop  # Store a reference to the main event loop
 
-    def _handle_trade_sync(self, trade):
-        """A synchronous wrapper to be called from the Alpaca thread."""
-        # This schedules the async handler to be run on the main event loop
+    async def _handle_trade_async(self, trade):
+        """Async handler expected by alpaca_trade_api.Stream."""
+        # Schedule putting the data on the main loop's queue since this handler
+        # runs in the Alpaca Stream's event loop.
         asyncio.run_coroutine_threadsafe(
-            self._handle_trade_async(trade),
+            self._data_queue.put({
+                'type': 'market_data',
+                'source': 'alpaca',
+                'symbol': trade.symbol,
+                'price': trade.price,
+                'asset_class': 'stock'
+            }),
             self.loop
         )
-
-    async def _handle_trade_async(self, trade):
-        """The actual async handler for processing the trade data."""
-        await self._data_queue.put({
-            'type': 'market_data',
-            'source': 'alpaca',
-            'symbol': trade.symbol,
-            'price': trade.price,
-            'asset_class': 'stock'
-        })
 
     async def add_subscription(self, new_asset):
         if new_asset not in self._subscribed_assets:
             self._subscribed_assets.add(new_asset)
             if self._conn:
                 print(f"Alpaca dynamically subscribing to {new_asset}")
-                # The library handles calling this from the main thread
-                self._conn.subscribe_trades(self._handle_trade_sync, new_asset)
+                # The library requires async handlers
+                self._conn.subscribe_trades(self._handle_trade_async, new_asset)
             return True
         return False
 
@@ -56,7 +53,7 @@ class AlpacaWsClient:
 
                 if self._subscribed_assets:
                     for asset in list(self._subscribed_assets):
-                        self._conn.subscribe_trades(self._handle_trade_sync, asset)
+                        self._conn.subscribe_trades(self._handle_trade_async, asset)
 
                 self._conn.run()
 
