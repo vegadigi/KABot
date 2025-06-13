@@ -3,6 +3,7 @@
 # NEW FILE: Handles stock trading via Alpaca.
 # ==============================================================================
 import alpaca_trade_api as tradeapi
+import asyncio
 
 class AlpacaRestClient:
     def __init__(self, config):
@@ -18,7 +19,19 @@ class AlpacaRestClient:
         try: return {asset.symbol for asset in self.api.list_assets(status='active')}
         except Exception as e: print(f"Could not fetch Alpaca assets: {e}"); return set()
 
-    def place_order(self, symbol, qty, side, order_type, time_in_force):
+    async def place_order(self, symbol, qty, side, order_type, time_in_force):
         print(f"PLACING LIVE ALPACA ORDER: {side} {qty} of {symbol}...")
-        try: return self.api.submit_order(symbol, qty, side, order_type, time_in_force)
-        except Exception as e: print(f"Alpaca order failed: {e}"); return None
+        try:
+            loop = asyncio.get_running_loop()
+            return await loop.run_in_executor(
+                None,
+                self.api.submit_order,
+                symbol,
+                qty,
+                side,
+                order_type,
+                time_in_force,
+            )
+        except Exception as e:
+            print(f"Alpaca order failed: {e}")
+            return None
