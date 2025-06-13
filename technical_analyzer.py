@@ -35,15 +35,22 @@ class TechnicalAnalyzer:
 
             if len(self.price_history[symbol]) > 50:
                 df = self.price_history[symbol]
-                df.ta.rsi(length=14, append=True);
-                df.ta.sma(length=20, append=True);
-                df.ta.sma(length=50, append=True);
+                df.ta.rsi(length=14, append=True)
+                df.ta.sma(length=20, append=True)
+                df.ta.sma(length=50, append=True)
                 df.ta.bbands(length=20, append=True)
+
+                df['pct_change'] = df['close'].pct_change()
+                df['volatility'] = df['pct_change'].rolling(window=20).std() * 100
 
                 latest = df.iloc[-1]
                 self.latest_indicators[symbol] = {
-                    'rsi': latest.get('RSI_14'), 'sma_20': latest.get('SMA_20'), 'sma_50': latest.get('SMA_50'),
-                    'upper_bollinger': latest.get('BBU_20_2.0'), 'lower_bollinger': latest.get('BBL_20_2.0')
+                    'rsi': latest.get('RSI_14'),
+                    'sma_20': latest.get('SMA_20'),
+                    'sma_50': latest.get('SMA_50'),
+                    'upper_bollinger': latest.get('BBU_20_2.0'),
+                    'lower_bollinger': latest.get('BBL_20_2.0'),
+                    'volatility': latest.get('volatility')
                 }
                 asset_id = self.db.get_or_create_asset(symbol, asset_class)
                 self.db.execute_query(
