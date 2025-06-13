@@ -28,4 +28,11 @@ class RiskManager:
             volume_usd = self.config.TREND_TRADE_VOLUME_USD
             print(f"RISK | Trend identified for {symbol}. Increasing trade size to ${volume_usd}.")
 
+        volatility = indicators.get('volatility')
+        if volatility is not None and volatility > self.config.VOLATILITY_THRESHOLD:
+            volume_usd *= self.config.HIGH_VOLATILITY_REDUCTION_FACTOR
+            print(
+                f"RISK | High volatility {volatility:.2f}% for {symbol}. Reducing trade size to ${volume_usd}."
+            )
+
         return volume_usd
