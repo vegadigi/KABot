@@ -62,9 +62,9 @@ class SentimentEngine:
                     rsi = indicators.get('rsi')
 
                     if rsi is not None:
-                        if signal == 'buy' and rsi < self._config.RSI_OVERBOUGHT:
+                        if signal == 'buy' and rsi <= self._config.RSI_OVERSOLD:
                             approved = True
-                        elif signal == 'sell' and rsi > self._config.RSI_OVERSOLD:
+                        elif signal == 'sell' and rsi >= self._config.RSI_OVERBOUGHT:
                             approved = True
                         else:
                             rejection_reason = f"RSI out of bounds ({rsi:.2f})"
