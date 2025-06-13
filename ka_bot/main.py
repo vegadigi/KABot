@@ -3,19 +3,19 @@
 # UPDATED: Added a simple HTTP server for status reporting.
 # ==============================================================================
 import asyncio
-from config import Config
-from database import DatabaseManager
-from kraken_ws_client import KrakenWsClient
-from kraken_rest_client import KrakenRestClient
-from alpaca_ws_client import AlpacaWsClient
-from alpaca_rest_client import AlpacaRestClient
-from reddit_client import RedditClient
-from technical_analyzer import TechnicalAnalyzer
-from risk_manager import RiskManager
-from sentiment_engine import SentimentEngine
-from ai_sentiment_analyzer import AISentimentAnalyzer
-from mock_trader import MockTrader
-from asset_discoverer import AssetDiscoverer
+from .config import Config
+from .db.database import DatabaseManager
+from .clients.kraken_ws_client import KrakenWsClient
+from .clients.kraken_rest_client import KrakenRestClient
+from .clients.alpaca_ws_client import AlpacaWsClient
+from .clients.alpaca_rest_client import AlpacaRestClient
+from .clients.reddit_client import RedditClient
+from .services.technical_analyzer import TechnicalAnalyzer
+from .services.risk_manager import RiskManager
+from .services.sentiment_engine import SentimentEngine
+from .analysis.ai_sentiment_analyzer import AISentimentAnalyzer
+from .services.mock_trader import MockTrader
+from .services.asset_discoverer import AssetDiscoverer
 import threading
 import http.server
 import socketserver
