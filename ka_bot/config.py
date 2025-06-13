@@ -26,7 +26,7 @@ class Config:
     # --- Core Logic ---
     TRADE_MODE = os.getenv("TRADE_MODE", "mock")
     SENTIMENT_CONFIDENCE_THRESHOLD = 0.6
-
+    GEMINI_API_KEY=os.getenv("GEMINI_API_KEY")
     # --- Risk Management ---
     BASE_TRADE_VOLUME_USD = float(os.getenv("BASE_TRADE_VOLUME_USD", 20.0))
     TREND_TRADE_VOLUME_USD = float(os.getenv("TREND_TRADE_VOLUME_USD", 100.0))

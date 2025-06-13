@@ -39,7 +39,7 @@ class AssetDiscoverer:
                                                                                                            "items": {
                                                                                                                "type": "STRING"}}}}}}
         try:
-            api_key = "";
+            api_key = self.config.GEMINI_API_KEY
             api_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
             async with aiohttp.ClientSession() as s:
                 async with s.post(api_url, json=payload) as r:
