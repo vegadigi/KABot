@@ -11,7 +11,7 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application's code into the container
-COPY . .
+COPY ./ka_bot .
 
 # Command to run the application when the container launches
 CMD ["python", "main.py"]

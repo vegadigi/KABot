@@ -10,7 +10,7 @@ import plotly.express as px
 from dotenv import load_dotenv
 import requests
 from datetime import datetime
-from .dashboard_utils import DashboardDB
+from dashboard_utils import DashboardDB
 
 # --- Configuration ---
 load_dotenv()

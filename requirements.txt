@@ -12,6 +12,7 @@ aiohttp
 asyncpraw
 nltk
 alpaca-trade-api
-torch
-transformers
+torch~=2.7.1
+transformers~=4.52.4
 pandas-ta
+requests~=2.32.3

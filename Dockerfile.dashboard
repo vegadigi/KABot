@@ -12,8 +12,8 @@ RUN pip install --no-cache-dir -r requirements.dashboard.txt
 
 # Copy the dashboard and utility files into the container
 # We only copy the files needed for the dashboard to keep the image small
-COPY ./dashboard.py ./
-COPY ./database_utils.py ./
+COPY ./ka_bot/dashboard/dashboard.py ./
+COPY ./ka_bot/dashboard/dashboard_utils.py ./
 COPY .env ./
 
 # Make port 5000 available to the world outside this container
