@@ -45,3 +45,10 @@ This update introduces a basic volatility measure and improved risk management f
 - **Dynamic Position Sizing**: The risk manager reduces trade size when volatility exceeds `Config.VOLATILITY_THRESHOLD`.
 
 These additions help the bot adapt position sizes to market conditions when executing very small, frequent trades.
+
+## Financial News Scanning
+
+The bot now includes a simple RSS-based news client that pulls headlines from
+popular outlets such as MarketWatch and Yahoo Finance. New articles are scanned
+for ticker symbols and fed into the asset discovery pipeline so that trending
+stocks can be monitored automatically.

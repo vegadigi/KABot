@@ -10,6 +10,7 @@ from clients.kraken_rest_client import KrakenRestClient
 from clients.alpaca_ws_client import AlpacaWsClient
 from clients.alpaca_rest_client import AlpacaRestClient
 from clients.reddit_client import RedditClient
+from clients.news_client import FinancialNewsClient
 from services.technical_analyzer import TechnicalAnalyzer
 from services.risk_manager import RiskManager
 from services.sentiment_engine import SentimentEngine
@@ -31,6 +32,7 @@ status_data = {
     'sentiment_engine': {'status': 'Initializing', 'last_seen': None},
     'asset_discoverer': {'status': 'Initializing', 'last_seen': None},
     'asset_monitor': {'status': 'Initializing', 'last_seen': None},
+    'news_client': {'status': 'Initializing', 'last_seen': None},
 }
 
 
@@ -92,6 +94,7 @@ async def main():
     loop = asyncio.get_event_loop()
     alpaca_ws = AlpacaWsClient(initial_stocks, raw_data_queue, config, loop)
     reddit_client = RedditClient(raw_data_queue, config, db_manager, subreddits)
+    news_client = FinancialNewsClient(raw_data_queue)
 
     ai_analyzer = AISentimentAnalyzer()
     risk_manager = RiskManager(config, tech_analyzer)
@@ -152,6 +155,7 @@ async def main():
     await asyncio.gather(
         run_and_update_status('kraken_ws', kraken_ws.listen()),
         run_and_update_status('reddit_client', reddit_client.stream_comments()),
+        run_and_update_status('news_client', news_client.poll()),
         run_and_update_status('pipeline_processor', pipeline_processor(raw_data_queue, processed_data_queue)),
         run_and_update_status('sentiment_engine', sentiment_engine.run()),
         run_and_update_status('asset_discoverer', asset_discoverer.run()),
