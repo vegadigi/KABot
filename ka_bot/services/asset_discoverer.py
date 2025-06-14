@@ -65,7 +65,7 @@ class AssetDiscoverer:
         print("Asset Discoverer listening...")
         while True:
             data = await self.data_queue.get()
-            if data.get('type') == 'social_post':
+            if data.get('type') in ('social_post', 'news_post'):
                 tickers = await self._extract_tickers_with_ai(data['text'])
                 for ticker in tickers:
                     ticker_upper = ticker.upper()
