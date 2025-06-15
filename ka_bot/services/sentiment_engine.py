@@ -42,7 +42,7 @@ class SentimentEngine:
         print("Core logic engine started...")
         while True:
             data = await self.data_queue.get()
-            if data.get('type') == 'social_post':
+            if data.get('type') in ('social_post', 'news_post'):
                 asset, asset_class = self._identify_asset_in_text(data['text'])
                 if not asset: continue
 
