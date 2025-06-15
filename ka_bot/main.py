@@ -94,7 +94,7 @@ async def main():
     loop = asyncio.get_event_loop()
     alpaca_ws = AlpacaWsClient(initial_stocks, raw_data_queue, config, loop)
     reddit_client = RedditClient(raw_data_queue, config, db_manager, subreddits)
-    news_client = FinancialNewsClient(raw_data_queue)
+    news_client = FinancialNewsClient(raw_data_queue, db_manager)
 
     ai_analyzer = AISentimentAnalyzer()
     risk_manager = RiskManager(config, tech_analyzer)
