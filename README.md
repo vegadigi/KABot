@@ -52,3 +52,10 @@ The bot now includes a simple RSS-based news client that pulls headlines from
 popular outlets such as MarketWatch and Yahoo Finance. New articles are scanned
 for ticker symbols and fed into the asset discovery pipeline so that trending
 stocks can be monitored automatically.
+
+## Backtesting
+
+The `Backtester` class in `analysis/backtester.py` provides a simple way to test
+trading ideas against a year's worth of historical data downloaded with
+`yfinance`. Pass in a strategy function that returns `"buy"` or `"sell"` signals
+and the backtester will simulate trades and report the final portfolio value.
